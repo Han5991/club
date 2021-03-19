@@ -17,22 +17,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //사용자 계정은 user1
-        auth.inMemoryAuthentication().withUser("user1")
-                //1111 패스워드 인코딩 결과
-                .password("$2a$10$/lhrnu9kMFGTwjMI5CWmTuGeerK11w35XZWar8DZ09E2K.DMOQPZ6")
-                .roles("USER");
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        //사용자 계정은 user1
+//        auth.inMemoryAuthentication().withUser("user1")
+//                //1111 패스워드 인코딩 결과
+//                .password("$2a$10$/lhrnu9kMFGTwjMI5CWmTuGeerK11w35XZWar8DZ09E2K.DMOQPZ6")
+//                .roles("USER");
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/sample/all").permitAll()
                 .antMatchers("/sample/member")
-                .hasRole("user");
+                .hasRole("USER");
         http.formLogin();//인가/인증에 문제시 로그인 화면
-        http.csrf().disable();
+//        http.csrf().disable();
+//        http.logout();//로그아웃
     }
 }
