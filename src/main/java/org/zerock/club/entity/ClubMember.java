@@ -1,13 +1,13 @@
 package org.zerock.club.entity;
 
 import lombok.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -17,6 +17,7 @@ import java.util.Set;
 @Getter
 @ToString
 public class ClubMember extends BaseEntity {
+
     @Id
     private String email;
 

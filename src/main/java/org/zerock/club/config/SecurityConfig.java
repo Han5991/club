@@ -3,11 +3,11 @@ package org.zerock.club.config;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.zerock.club.security.handler.ClubLoginSuccessHandler;
 
 @Configuration
 @Log4j2
@@ -17,15 +17,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        //사용자 계정은 user1
-//        auth.inMemoryAuthentication().withUser("user1")
-//                //1111 패스워드 인코딩 결과
-//                .password("$2a$10$/lhrnu9kMFGTwjMI5CWmTuGeerK11w35XZWar8DZ09E2K.DMOQPZ6")
-//                .roles("USER");
-//    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -34,6 +25,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasRole("USER");
         http.formLogin();//인가/인증에 문제시 로그인 화면
         http.csrf().disable();
-        http.oauth2Login();
+        http.oauth2Login().successHandler(successHandler());
+    }
+
+    @Bean
+    public ClubLoginSuccessHandler successHandler(){
+        return new ClubLoginSuccessHandler(passwordEncoder());
     }
 }
