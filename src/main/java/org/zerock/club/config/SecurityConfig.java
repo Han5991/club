@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.zerock.club.security.filter.ApiCheckFilter;
 import org.zerock.club.security.handler.ClubLoginSuccessHandler;
 import org.zerock.club.security.service.ClubUserDetailsService;
 
@@ -27,19 +29,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.authorizeRequests()
-//                .antMatchers("/sample/all").permitAll()
-//                .antMatchers("/sample/member")
-//                .hasRole("USER");
         http.formLogin();//인가/인증에 문제시 로그인 화면
         http.csrf().disable();
         http.oauth2Login().successHandler(successHandler());
-        http.rememberMe().tokenValiditySeconds(60*60*7).
+        http.rememberMe().tokenValiditySeconds(60 * 60 * 7).
                 userDetailsService(userDetailsService);//7days
+        http.addFilterBefore(apiCheckFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
-    public ClubLoginSuccessHandler successHandler(){
+    public ClubLoginSuccessHandler successHandler() {
         return new ClubLoginSuccessHandler(passwordEncoder());
+    }
+
+    @Bean
+    public ApiCheckFilter apiCheckFilter() {
+        return new ApiCheckFilter("/notes/**/*");
     }
 }
